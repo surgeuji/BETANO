@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "install": "cd frontend && npm ci && cd ../admin-dashboard && npm ci",
+    "build": "npm run vercel-build",
     "build:frontend": "cd frontend && npm run build",
     "build:admin": "cd admin-dashboard && npm run build",
     "vercel-build": "cd frontend && npm run build"
