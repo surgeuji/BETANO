@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AdminLogin from './pages/AdminLogin';
@@ -15,6 +15,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin/*"
