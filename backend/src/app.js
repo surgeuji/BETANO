@@ -23,6 +23,7 @@ const withdrawalRoutes = require('./routes/withdrawal.routes');
 const betRoutes = require('./routes/bet.routes');
 const casinoRoutes = require('./routes/casino.routes');
 const adminRoutes = require('./routes/admin.routes');
+const debugRoutes = require('./routes/debug.routes');
 
 const app = express();
 
@@ -38,6 +39,13 @@ app.use('/api/withdrawals', withdrawalRoutes);
 app.use('/api/bets', betRoutes);
 app.use('/api/casino', casinoRoutes);
 app.use('/api/admin', adminRoutes);
+// Debug routes (non-production, for troubleshooting)
+app.use('/debug', debugRoutes);
+
+// Root route - simple info
+app.get('/', (req, res) => {
+  res.send('BETANO backend API - use /health or /api/* endpoints');
+});
 
 // Health check
 app.get('/health', (req, res) => {
