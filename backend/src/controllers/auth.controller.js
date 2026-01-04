@@ -58,3 +58,31 @@ exports.login = async (req, res) => {
     res.status(401).json({ error: error.message });
   }
 };
+
+exports.registerAdmin = async (req, res) => {
+  try {
+    const { email, phone, password, role } = req.body;
+
+    if (!email || !phone || !password || !role) {
+      return res.status(400).json({ error: 'Missing required fields (email, phone, password, role)' });
+    }
+
+    const validRoles = ['SUPER_ADMIN', 'FINANCE_ADMIN', 'OPERATIONS_ADMIN', 'SUPPORT_ADMIN'];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ error: `Invalid role. Must be one of: ${validRoles.join(', ')}` });
+    }
+
+    const user = await UserService.registerUser(email, phone, password);
+    user.role = role;
+    
+    // Create wallet for new admin user
+    WalletService.createWallet(user.id);
+
+    res.status(201).json({ 
+      message: 'Admin user registered successfully',
+      user: { id: user.id, email: user.email, phone: user.phone, role: user.role }
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
