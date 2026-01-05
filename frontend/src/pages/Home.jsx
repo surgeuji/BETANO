@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getWallet } from '../api/walletAPI';
 import { logout } from '../api/authAPI';
 import '../styles/sportybet.css';
+import TeamLogo from '../components/TeamLogo';
+import { fetchLiveMatches } from '../api/liveAPI';
 
 const Home = () => {
   const [wallet, setWallet] = useState(null);
@@ -11,12 +13,7 @@ const Home = () => {
   const [betSlip, setBetSlip] = useState({ selections: [], stake: '', open: false });
   const navigate = useNavigate();
 
-  // Mock live matches - in production, fetch from backend
-  const liveMatches = [
-    { id: 1, league: 'EPL', home: 'Arsenal', away: 'Brighton', time: '14:30', odds: { '1': 1.75, 'X': 3.50, '2': 4.50 } },
-    { id: 2, league: 'Serie A', home: 'Juventus', away: 'Milan', time: '16:45', odds: { '1': 2.10, 'X': 3.20, '2': 3.40 } },
-    { id: 3, league: 'LaLiga', home: 'Barcelona', away: 'Real Madrid', time: '18:00', odds: { '1': 1.90, 'X': 3.30, '2': 3.80 } },
-  ];
+  const [liveMatches, setLiveMatches] = useState([]);
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -31,6 +28,15 @@ const Home = () => {
     };
 
     fetchWallet();
+    // fetch live matches (use env-configured provider if available)
+    (async () => {
+      try {
+        const matches = await fetchLiveMatches();
+        setLiveMatches(matches);
+      } catch (e) {
+        console.error('Failed to fetch live matches', e);
+      }
+    })();
   }, []);
 
   const handleSelectOdd = (matchId, matchInfo, oddType, oddValue) => {
@@ -110,9 +116,15 @@ const Home = () => {
                 </div>
 
                 <div className="match-info">
-                  <div className="team-name">{match.home}</div>
+                  <div className="team-block">
+                    <TeamLogo name={match.home} size={44} />
+                    <div className="team-name">{match.home}</div>
+                  </div>
                   <div className="vs-text">vs</div>
-                  <div className="team-name">{match.away}</div>
+                  <div className="team-block">
+                    <TeamLogo name={match.away} size={44} />
+                    <div className="team-name">{match.away}</div>
+                  </div>
                 </div>
 
                 <div style={{ fontSize: '12px', color: 'var(--color-muted)', marginBottom: '12px', textAlign: 'center' }}>

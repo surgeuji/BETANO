@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/sportybet.css';
+import { startGame, getGame } from '../api/casinoAPI';
 
 const Casino = () => {
   const navigate = useNavigate();
@@ -17,7 +18,31 @@ const Casino = () => {
   ];
 
   const handlePlayGame = (gameName) => {
-    alert(`Starting ${gameName}...`);
+    (async () => {
+      try {
+        const stake = 100; // default demo stake
+        const result = await startGame(gameName.toUpperCase().slice(0,6), stake);
+        // result should contain gameId
+        const gameId = result.id || result.gameId;
+        if (!gameId) {
+          alert('Game started (no id returned)');
+          return;
+        }
+        // poll for result
+        const poll = async () => {
+          const state = await getGame(gameId);
+          if (state && state.result) {
+            alert(`${gameName} result: ${state.result} | Payout: ${state.payout || 0}`);
+          } else {
+            setTimeout(poll, 1000);
+          }
+        };
+        poll();
+      } catch (err) {
+        console.error('Casino play error', err);
+        alert('Failed to start game. Ensure you are logged in.');
+      }
+    })();
   };
 
   return (

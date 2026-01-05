@@ -32,6 +32,7 @@ const Navigation = () => {
                 <Link to="/casino" className="navbar-link">Casino</Link>
                 <Link to="/virtual" className="navbar-link">Virtual</Link>
                 <Link to="/money" className="navbar-link">My Money</Link>
+                <Link to="/open-bets" className="navbar-link">Open Bets</Link>
               </>
             )}
           </div>
@@ -78,6 +79,7 @@ const Navigation = () => {
                 <Link to="/casino" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Casino</Link>
                 <Link to="/virtual" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Virtual</Link>
                 <Link to="/money" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>My Money</Link>
+                <Link to="/open-bets" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Open Bets</Link>
                 <button className="mobile-link-btn" onClick={handleLogout}>Logout</button>
               </>
             )}

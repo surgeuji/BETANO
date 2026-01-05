@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/sportybet.css';
+import TeamLogo from '../components/TeamLogo';
+import { fetchLiveMatches } from '../api/liveAPI';
 
 const Sports = () => {
   const navigate = useNavigate();
@@ -88,7 +90,21 @@ const Sports = () => {
     setBetSlip({ selections: [], stake: '', open: false });
   };
 
-  const currentMatches = matchesByLeague[selectedLeague] || [];
+  const [currentMatches, setCurrentMatches] = useState(matchesByLeague[selectedLeague] || []);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const matches = await fetchLiveMatches(selectedLeague);
+        if (mounted && matches) setCurrentMatches(matches);
+      } catch (e) {
+        console.error('Error fetching live matches', e);
+        if (mounted) setCurrentMatches(matchesByLeague[selectedLeague] || []);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [selectedLeague]);
 
   return (
     <div>
@@ -125,9 +141,15 @@ const Sports = () => {
             </div>
 
             <div className="match-info">
-              <div className="team-name">{match.home}</div>
+              <div className="team-block">
+                <TeamLogo name={match.home} size={40} />
+                <div className="team-name">{match.home}</div>
+              </div>
               <div className="vs-text">vs</div>
-              <div className="team-name">{match.away}</div>
+              <div className="team-block">
+                <TeamLogo name={match.away} size={40} />
+                <div className="team-name">{match.away}</div>
+              </div>
             </div>
 
             <div style={{ fontSize: '12px', color: 'var(--color-muted)', marginBottom: '12px', textAlign: 'center' }}>

@@ -11,6 +11,7 @@ import Virtual from './pages/Virtual';
 import Money from './pages/Money';
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
+import OpenBets from './pages/OpenBets';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/casino" element={<ProtectedRoute><Casino /></ProtectedRoute>} />
             <Route path="/virtual" element={<ProtectedRoute><Virtual /></ProtectedRoute>} />
             <Route path="/money" element={<ProtectedRoute><Money /></ProtectedRoute>} />
+            <Route path="/open-bets" element={<ProtectedRoute><OpenBets /></ProtectedRoute>} />
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
             <Route path="/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
           </Routes>
