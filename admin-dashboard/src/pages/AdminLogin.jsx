@@ -4,8 +4,8 @@ import { adminLogin } from '../api/adminAuthAPI';
 import '../styles/admin.css';
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('admin@betano.com');
-  const [password, setPassword] = useState('Admin@123');
+  const [email, setEmail] = useState('daviskipper1@gmail.com');
+  const [password, setPassword] = useState('fabong123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
