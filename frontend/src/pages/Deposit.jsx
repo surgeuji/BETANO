@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createDeposit } from '../api/depositAPI';
-import '../styles/colors.css';
-import '../styles/deposit.css';
+import '../styles/sportybet.css';
 
 const Deposit = () => {
+  const navigate = useNavigate();
   const [depositType, setDepositType] = useState('nigerian'); // nigerian | international
   const [amount, setAmount] = useState('');
   const [hasDeposited, setHasDeposited] = useState(false);
@@ -48,7 +49,8 @@ const Deposit = () => {
       setHasDeposited(false);
       setTimeout(() => {
         setMessage('');
-      }, 5000);
+        navigate('/money');
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.error || 'Deposit confirmation failed. Please try again.');
     } finally {
@@ -57,26 +59,34 @@ const Deposit = () => {
   };
 
   return (
-    <div className="deposit-container">
-      <div className="deposit-page">
-        <h1 className="page-title">💳 Deposit Funds</h1>
-        <p className="page-subtitle">Add money to your BETTING FLASH account</p>
+    <div>
+      {/* HEADER */}
+      <div className="header">
+        <div className="header-logo">⚡ BETTING FLASH</div>
+        <div className="header-actions">
+          <button className="btn-deposit" onClick={() => navigate('/money')}>Back</button>
+        </div>
+      </div>
 
-        {error && <div className="alert alert-warning">{error}</div>}
-        {message && <div className="alert alert-success">{message}</div>}
+      {/* MAIN CONTENT */}
+      <div className="main-content">
+        <div className="section-title">💳 Deposit Funds</div>
+        
+        {error && <div className="alert alert-error">{error}</div>}
+        {message && <div className="alert" style={{ background: 'rgba(26, 255, 0, 0.1)', border: '1px solid var(--color-win)', color: 'var(--color-win)' }}>{message}</div>}
 
         {/* Deposit Type Selector */}
-        <div className="deposit-type-selector">
+        <div className="league-filters" style={{ marginBottom: '20px' }}>
           <button
             type="button"
-            className={`type-btn ${depositType === 'nigerian' ? 'active' : ''}`}
+            className={`league-filter ${depositType === 'nigerian' ? 'active' : ''}`}
             onClick={() => setDepositType('nigerian')}
           >
             🇳🇬 Nigerian
           </button>
           <button
             type="button"
-            className={`type-btn ${depositType === 'international' ? 'active' : ''}`}
+            className={`league-filter ${depositType === 'international' ? 'active' : ''}`}
             onClick={() => setDepositType('international')}
           >
             🌍 International
@@ -84,7 +94,7 @@ const Deposit = () => {
         </div>
 
         {/* Bank Account Info Card */}
-        <div className="account-info-card">
+        <div className="account-card">
           <div className="account-field">
             <span className="field-label">Bank Name</span>
             <span className="field-value">{currentAccount.bankName}</span>
@@ -107,9 +117,9 @@ const Deposit = () => {
         </div>
 
         {/* Warning Message */}
-        <div className="warning-box">
-          <span className="warning-icon">⚠️</span>
-          <div className="warning-content">
+        <div className="deposit-warning">
+          <span style={{ fontSize: '18px', marginRight: '8px' }}>⚠️</span>
+          <div>
             <strong>IMPORTANT</strong>
             <p>Do NOT click "Confirm Deposit" until you have successfully sent the money to the account above.</p>
             <p>Clicking without payment may lead to account restriction.</p>
@@ -117,7 +127,7 @@ const Deposit = () => {
         </div>
 
         {/* Deposit Form */}
-        <form onSubmit={handleConfirmDeposit} className="deposit-form">
+        <form onSubmit={handleConfirmDeposit}>
           <div className="form-group">
             <label>Amount to Deposit ({currentAccount.currency})</label>
             <input
@@ -128,6 +138,7 @@ const Deposit = () => {
               required
               step="0.01"
               min="100"
+              style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 215, 0, 0.2)', color: 'var(--color-milk)', padding: '12px', borderRadius: '8px', fontSize: '14px', width: '100%', marginTop: '8px' }}
             />
           </div>
 
@@ -147,16 +158,27 @@ const Deposit = () => {
           <button
             type="submit"
             disabled={loading || !hasDeposited || !amount}
-            className="btn-primary deposit-btn"
+            className={`btn-primary ${!hasDeposited || !amount ? 'disabled' : ''}`}
+            style={{
+              width: '100%',
+              background: (!hasDeposited || !amount) ? 'rgba(255, 215, 0, 0.3)' : 'var(--color-gold)',
+              color: 'var(--bg-primary)',
+              border: 'none',
+              padding: '12px',
+              borderRadius: '8px',
+              fontWeight: '700',
+              cursor: (!hasDeposited || !amount) ? 'not-allowed' : 'pointer',
+              marginTop: '12px'
+            }}
           >
             {loading ? 'Processing...' : 'Confirm Deposit'}
           </button>
         </form>
 
         {/* Instructions */}
-        <div className="instructions">
-          <h3>How to Deposit</h3>
-          <ol>
+        <div className="deposit-instructions" style={{ marginTop: '20px', marginBottom: '100px', background: 'rgba(255, 215, 0, 0.05)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(255, 215, 0, 0.1)' }}>
+          <h3 style={{ color: 'var(--color-gold)', marginBottom: '12px' }}>📖 How to Deposit</h3>
+          <ol style={{ color: 'var(--color-milk)', paddingLeft: '20px', lineHeight: '1.8' }}>
             <li>Copy the account number above</li>
             <li>Send money via {currentAccount.bankName} or your preferred method</li>
             <li>Enter the amount you sent</li>
@@ -165,6 +187,30 @@ const Deposit = () => {
             <li>Admin will verify and credit your account</li>
           </ol>
         </div>
+      </div>
+
+      {/* BOTTOM NAVIGATION */}
+      <div className="bottom-nav">
+        <a href="/" className="nav-item">
+          <div className="nav-icon">🏠</div>
+          Home
+        </a>
+        <a href="/sports" className="nav-item">
+          <div className="nav-icon">⚽</div>
+          Sports
+        </a>
+        <a href="/casino" className="nav-item">
+          <div className="nav-icon">🎰</div>
+          Casino
+        </a>
+        <a href="/money" className="nav-item active">
+          <div className="nav-icon">💰</div>
+          Money
+        </a>
+        <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
+          <div className="nav-icon">👤</div>
+          Account
+        </a>
       </div>
     </div>
   );

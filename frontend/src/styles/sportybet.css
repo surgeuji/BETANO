@@ -658,6 +658,286 @@ body {
   border-color: var(--color-gold);
 }
 
+/* MONEY/ACCOUNT PAGE */
+.balance-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.balance-card {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 16px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.balance-card.main {
+  border-color: var(--color-gold);
+}
+
+.balance-card.bonus {
+  border-color: var(--color-pending);
+}
+
+.balance-label {
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.balance-amount {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-milk);
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.action-btn-primary,
+.action-btn-secondary {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+}
+
+.action-btn-primary {
+  background: var(--color-gold);
+  color: var(--bg-primary);
+}
+
+.action-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.action-btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--color-milk);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.action-btn-secondary:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--color-gold);
+}
+
+.money-tabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.money-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  padding: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  position: relative;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: var(--color-milk);
+}
+
+.tab-btn.active {
+  color: var(--color-gold);
+  border-bottom-color: var(--color-gold);
+}
+
+.tab-content {
+  padding: 12px 0;
+}
+
+.info-section h3 {
+  margin-bottom: 16px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.info-label {
+  color: var(--color-muted);
+}
+
+.info-value {
+  color: var(--color-milk);
+  font-weight: 600;
+}
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border-left: 3px solid rgba(255, 215, 0, 0.2);
+}
+
+.transaction-item.deposit {
+  border-left-color: var(--color-win);
+}
+
+.transaction-item.bet {
+  border-left-color: var(--color-loss);
+}
+
+.transaction-item.win {
+  border-left-color: var(--color-win);
+}
+
+.tx-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tx-type {
+  font-weight: 600;
+  color: var(--color-milk);
+  font-size: 14px;
+}
+
+.tx-date {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.tx-amount {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.promo-box {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(30, 144, 255, 0.1) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  color: var(--color-milk);
+  margin-bottom: 100px;
+}
+
+/* DEPOSIT PAGE */
+.account-card {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.account-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.account-field:last-child {
+  border-bottom: none;
+}
+
+.field-label {
+  color: var(--color-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field-value {
+  color: var(--color-milk);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.account-number {
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 215, 0, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.deposit-warning {
+  display: flex;
+  gap: 12px;
+  background: rgba(255, 59, 59, 0.08);
+  border: 1px solid var(--color-loss);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  color: var(--color-milk);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.deposit-warning strong {
+  display: block;
+  color: var(--color-loss);
+  margin-bottom: 4px;
+}
+
+.confirm-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255, 215, 0, 0.05);
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.confirm-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-gold);
+}
+
+.confirm-checkbox label {
+  color: var(--color-milk);
+  font-size: 13px;
+  cursor: pointer;
+}
+
 /* RESPONSIVE */
 @media (max-width: 480px) {
   .header {
