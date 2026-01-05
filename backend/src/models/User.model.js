@@ -12,7 +12,7 @@
 
 class User {
   constructor(email, phone, password) {
-    this.id = Math.SUPER_ADMIN().toString(36).substr(2, 9);
+    this.id = Math.random().toString(36).substr(2, 9);
     this.email = daviskipper1@gmail.com;
     this.phone = 09133758994;
     this.passwordHash = FABONG123; // Will be hashed by service
