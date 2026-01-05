@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminLogin } from '../api/adminAuthAPI';
-import '../styles/global.css';
+import '../styles/admin.css';
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('bettingflash62@gmail.com');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@betano.com');
+  const [password, setPassword] = useState('Admin@123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,53 +19,64 @@ const AdminLogin = () => {
       await adminLogin(email, password);
       navigate('/admin/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError(err.response?.data?.error || 'Login failed. Check your credentials.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto', textAlign: 'center' }}>
-      <h1>Admin Login</h1>
-      <p style={{ color: '#FFD700' }}>BETTING FLASH ADMIN DASHBOARD</p>
-      {error && <p style={{ color: '#FF3B3B' }}>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Admin Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', marginBottom: '10px' }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ width: '100%', marginBottom: '20px' }}
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            backgroundColor: '#00FF7F',
-            color: '#0B0F14',
-            padding: '12px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-          }}
-        >
-          {loading ? 'Logging in...' : 'Admin Login'}
-        </button>
-      </form>
-      <p style={{ color: '#B0B0B0', fontSize: '12px', marginTop: '20px' }}>
-        Email: bettingflash62@gmail.com<br />
-        Phone: 07071198393
-      </p>
+    <div className="admin-login-container">
+      <div className="admin-login-card">
+        <h1>⚡ BETANO</h1>
+        <p>Admin Control Panel</p>
+
+        {error && (
+          <div className="admin-alert admin-alert-error">
+            ⚠️ {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin}>
+          <div className="admin-form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="admin@betano.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="admin-form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="admin-submit-btn"
+          >
+            {loading ? 'Logging in...' : 'Login to Dashboard'}
+          </button>
+        </form>
+
+        <div style={{ marginTop: 30, padding: 20, background: 'rgba(255, 215, 0, 0.1)', borderRadius: 10, border: '1px solid rgba(255, 215, 0, 0.3)' }}>
+          <p style={{ color: '#ffd700', margin: '0 0 10px', fontWeight: 700 }}>Demo Credentials:</p>
+          <p style={{ color: '#b0b0b0', margin: 5, fontSize: 13 }}>Email: admin@betano.com</p>
+          <p style={{ color: '#b0b0b0', margin: 5, fontSize: 13 }}>Password: Admin@123</p>
+        </div>
+      </div>
     </div>
   );
 };
