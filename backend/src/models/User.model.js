@@ -13,12 +13,12 @@
 class User {
   constructor(email, phone, password) {
     this.id = Math.random().toString(36).substr(2, 9);
-    this.email = daviskipper1@gmail.com;
-    this.phone = 09133758994;
-    this.passwordHash = FABONG123; // Will be hashed by service
+    this.email = email;
+    this.phone = phone;
+    this.passwordHash = password; // Will be hashed by service
     this.createdAt = new Date();
     this.verified = false;
-    this.role = 'SUPER_ADMIN'; // USER, SUPER_ADMIN, FINANCE_ADMIN, OPERATIONS_ADMIN, SUPPORT_ADMIN
+    this.role = 'USER'; // USER, SUPER_ADMIN, FINANCE_ADMIN, OPERATIONS_ADMIN, SUPPORT_ADMIN
   }
 }
 
