@@ -1,0 +1,206 @@
+/* BETTING FLASH — GLOBAL COLOR SYSTEM (LOCKED) */
+:root {
+  /* PRIMARY PALETTE - BLACK × GOLD × MILK */
+  --color-bg-dark: #0B0F14;           /* Main background - Black */
+  --color-bg-card: #151A21;           /* Card background - Deep black */
+  --color-gold: #FFD700;              /* Gold accent - Premium */
+  --color-milk: #F5F5F5;              /* Main text - Milk */
+  --color-muted: #B0B0B0;             /* Secondary text - Muted */
+  
+  /* STATUS COLORS (STRICT RULES) */
+  --color-win: #1AFF00;               /* WON bets only */
+  --color-loss: #FF3B3B;              /* LOST bets only */
+  --color-pending: #1E90FF;           /* PENDING/RUNNING bets only */
+  --color-promo: #FFD700;             /* PROMO/BONUS - same as gold */
+  
+  /* UTILITY COLORS */
+  --color-border: rgba(255, 215, 0, 0.2);
+  --color-border-focus: rgba(255, 215, 0, 0.5);
+  --color-shadow: rgba(255, 215, 0, 0.1);
+  
+  /* SPACING & RADIUS */
+  --radius-sm: 12px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --transition: all 0.3s ease;
+}
+
+/* GLOBAL RESETS */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg-dark);
+  color: var(--color-milk);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* TYPOGRAPHY */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-milk);
+  font-weight: 800;
+  margin: 0;
+}
+
+p {
+  color: var(--color-muted);
+  margin: 0;
+}
+
+a {
+  color: var(--color-gold);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--color-milk);
+}
+
+/* BUTTON STYLES */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: var(--color-gold);
+  color: var(--color-bg-dark);
+  padding: 14px 28px;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-milk);
+  border: 1px solid var(--color-gold);
+  padding: 12px 24px;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: var(--color-gold);
+  color: var(--color-bg-dark);
+}
+
+/* FORMS */
+input, textarea, select {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-milk);
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  background: rgba(255, 215, 0, 0.02);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+}
+
+/* CARDS */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+/* ALERTS & WARNINGS */
+.alert {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.alert-warning {
+  background: rgba(255, 59, 59, 0.1);
+  border: 1px solid #FF3B3B;
+  color: #FF9999;
+}
+
+.alert-success {
+  background: rgba(26, 255, 0, 0.1);
+  border: 1px solid var(--color-win);
+  color: var(--color-win);
+}
+
+.alert-info {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+}
+
+/* STATUS BADGES */
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-win {
+  background: rgba(26, 255, 0, 0.2);
+  color: var(--color-win);
+}
+
+.badge-loss {
+  background: rgba(255, 59, 59, 0.2);
+  color: var(--color-loss);
+}
+
+.badge-pending {
+  background: rgba(30, 144, 255, 0.2);
+  color: var(--color-pending);
+}
+
+.badge-promo {
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--color-gold);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 80px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}

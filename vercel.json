@@ -1,11 +1,4 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "admin-dashboard/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    }
-  ],
-  "outputDirectory": "admin-dashboard/dist"
+  "buildCommand": "echo 'Frontend and Admin Dashboard moved to Netlify'"
 }
