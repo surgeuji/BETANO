@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../api/authAPI';
-import '../styles/colors.css';
-import '../styles/auth.css';
+import '../styles/sportybet.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +29,6 @@ const Register = () => {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -41,13 +39,11 @@ const Register = () => {
       return;
     }
 
-    // Check if promo code is entered
     if (formData.promoCode.trim()) {
       setShowPromoModal(true);
       return;
     }
 
-    // Proceed with registration
     await submitRegistration();
   };
 
@@ -68,11 +64,11 @@ const Register = () => {
     <>
       <div className="auth-container">
         <div className="auth-card">
-          <h1 className="auth-logo">⚡ BETTING FLASH</h1>
-          <p className="auth-subtitle">Join Premium Bettors Today</p>
+          <h1>⚡ BETTING FLASH</h1>
+          <p>Create Your Account</p>
 
           {error && (
-            <div className="alert alert-warning">
+            <div className="alert alert-error">
               ⚠️ {error}
             </div>
           )}
@@ -83,7 +79,7 @@ const Register = () => {
               <input
                 type="text"
                 name="fullName"
-                placeholder="Your Full Name"
+                placeholder="Your name"
                 value={formData.fullName}
                 onChange={handleChange}
                 required
@@ -91,7 +87,7 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label>Email Address</label>
+              <label>Email</label>
               <input
                 type="email"
                 name="email"
@@ -103,7 +99,7 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label>Phone Number</label>
+              <label>Phone</label>
               <input
                 type="tel"
                 name="phone"
@@ -139,11 +135,11 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label>Promo Code <span className="optional">(Optional)</span></label>
+              <label>Promo Code <span style={{ color: 'var(--color-muted)', fontSize: '12px' }}>(Optional)</span></label>
               <input
                 type="text"
                 name="promoCode"
-                placeholder="Enter promo code if you have one"
+                placeholder="If you have one"
                 value={formData.promoCode}
                 onChange={handleChange}
               />
@@ -152,38 +148,73 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary auth-btn"
+              className="btn-login"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? 'Creating...' : 'Create Account'}
             </button>
           </form>
 
           <div className="auth-link">
-            Already have an account? <a href="/login">Login Here</a>
+            Already have an account? <a href="/login">Login</a>
           </div>
         </div>
       </div>
 
-      {/* Promo Code Modal */}
       {showPromoModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>🎉 Congratulations!</h2>
-            <p>You qualify for a <strong>500% bonus</strong> on your first deposit.</p>
-            <p style={{ marginTop: '16px' }}>Deposit now and unlock your bonus.</p>
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'var(--bg-secondary)',
+            border: '1px solid rgba(255, 215, 0, 0.3)',
+            borderRadius: '16px',
+            padding: '40px 30px',
+            maxWidth: '420px',
+            width: '90%',
+            textAlign: 'center'
+          }}>
+            <h2 style={{ color: 'var(--color-gold)', marginBottom: '12px' }}>🎉 Congratulations!</h2>
+            <p style={{ color: 'var(--color-muted)', marginBottom: '16px' }}>
+              You qualify for a <strong style={{ color: 'var(--color-gold)' }}>500% bonus</strong> on your first deposit.
+            </p>
+            <p style={{ color: 'var(--color-muted)', marginBottom: '24px' }}>
+              Deposit now and unlock your bonus.
+            </p>
             
-            <div className="modal-actions">
-              <button className="btn-secondary" onClick={() => setShowPromoModal(false)}>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button 
+                onClick={() => setShowPromoModal(false)}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 215, 0, 0.3)',
+                  color: 'var(--color-milk)',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
                 Maybe Later
               </button>
               <button 
-                className="btn-primary" 
                 onClick={() => {
                   setShowPromoModal(false);
                   submitRegistration();
                 }}
+                className="btn-login"
+                style={{ flex: 1 }}
               >
-                Continue to Registration
+                Continue
               </button>
             </div>
           </div>

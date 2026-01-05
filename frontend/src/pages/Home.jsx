@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getWallet } from '../api/walletAPI';
-import '../styles/pages.css';
+import { logout } from '../api/authAPI';
+import '../styles/sportybet.css';
 
 const Home = () => {
   const [wallet, setWallet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [betSlip, setBetSlip] = useState({ selections: [], stake: '', open: false });
+  const navigate = useNavigate();
+
+  // Mock live matches - in production, fetch from backend
+  const liveMatches = [
+    { id: 1, league: 'EPL', home: 'Arsenal', away: 'Brighton', time: '14:30', odds: { '1': 1.75, 'X': 3.50, '2': 4.50 } },
+    { id: 2, league: 'Serie A', home: 'Juventus', away: 'Milan', time: '16:45', odds: { '1': 2.10, 'X': 3.20, '2': 3.40 } },
+    { id: 3, league: 'LaLiga', home: 'Barcelona', away: 'Real Madrid', time: '18:00', odds: { '1': 1.90, 'X': 3.30, '2': 3.80 } },
+  ];
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -22,114 +33,192 @@ const Home = () => {
     fetchWallet();
   }, []);
 
+  const handleSelectOdd = (matchId, matchInfo, oddType, oddValue) => {
+    const selection = {
+      id: matchId,
+      match: `${matchInfo.home} vs ${matchInfo.away}`,
+      type: oddType,
+      odd: oddValue,
+    };
+
+    setBetSlip(prev => {
+      const exists = prev.selections.find(s => s.id === matchId);
+      if (exists) {
+        return {
+          ...prev,
+          selections: prev.selections.map(s => s.id === matchId ? selection : s)
+        };
+      }
+      return {
+        ...prev,
+        selections: [...prev.selections, selection],
+        open: true
+      };
+    });
+  };
+
+  const removeSelection = (matchId) => {
+    setBetSlip(prev => ({
+      ...prev,
+      selections: prev.selections.filter(s => s.id !== matchId)
+    }));
+  };
+
+  const calculateTotalOdds = () => {
+    return betSlip.selections.reduce((total, s) => total * s.odd, 1).toFixed(2);
+  };
+
+  const calculatePotentialWin = () => {
+    if (!betSlip.stake) return 0;
+    return (parseFloat(betSlip.stake) * calculateTotalOdds()).toFixed(2);
+  };
+
+  const handlePlaceBet = () => {
+    if (betSlip.selections.length === 0 || !betSlip.stake) {
+      alert('Please select matches and enter stake');
+      return;
+    }
+    alert(`Bet placed! Total odds: ${calculateTotalOdds()}, Potential win: ₦${calculatePotentialWin()}`);
+    setBetSlip({ selections: [], stake: '', open: false });
+  };
+
   return (
-    <div className="page-container">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <h1 className="hero-title">Welcome to BETANO</h1>
-          <p className="hero-subtitle">Your Premier Betting Experience</p>
+    <div>
+      {/* HEADER */}
+      <div className="header">
+        <div className="header-logo">⚡ BETTING FLASH</div>
+        <input className="header-search" placeholder="Search..." />
+        <div className="header-actions">
+          <button className="btn-deposit" onClick={() => navigate('/money')}>Deposit</button>
+          {wallet && <div className="balance-display"><span className="balance-icon">🏦</span>₦{wallet.mainBalance?.toFixed(2) || '0.00'}</div>}
         </div>
-      </section>
+      </div>
 
-      {/* Main Dashboard */}
-      <div className="dashboard-main">
-        {loading && (
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Loading your wallet...</p>
-          </div>
-        )}
+      {/* MAIN CONTENT */}
+      <div className="main-content">
+        {loading && <p style={{ padding: '20px', textAlign: 'center' }}>Loading matches...</p>}
+        {error && <p style={{ padding: '20px', color: 'var(--color-loss)', textAlign: 'center' }}>{error}</p>}
 
-        {error && (
-          <div className="alert alert-error">
-            <span>⚠️ {error}</span>
-          </div>
-        )}
-
-        {wallet && (
+        {!loading && (
           <>
-            {/* Wallet Cards */}
-            <section className="wallet-section">
-              <h2 className="section-title">Your Wallet</h2>
-              <div className="wallet-grid">
-                <div className="wallet-card main-balance">
-                  <div className="card-label">Main Balance</div>
-                  <div className="card-amount">${wallet.mainBalance?.toFixed(2) || '0.00'}</div>
-                  <div className="card-icon">💰</div>
+            <div className="section-title">🔴 Live Now</div>
+            {liveMatches.map(match => (
+              <div key={match.id} className="match-card">
+                <div className="match-header">
+                  <span>{match.league}</span>
+                  <span className="match-badge">LIVE</span>
                 </div>
 
-                <div className="wallet-card bonus-balance">
-                  <div className="card-label">Bonus Balance</div>
-                  <div className="card-amount">${wallet.bonusBalance?.toFixed(2) || '0.00'}</div>
-                  <div className="card-icon">🎁</div>
+                <div className="match-info">
+                  <div className="team-name">{match.home}</div>
+                  <div className="vs-text">vs</div>
+                  <div className="team-name">{match.away}</div>
                 </div>
 
-                <div className="wallet-card withdrawable">
-                  <div className="card-label">Withdrawable</div>
-                  <div className="card-amount">${wallet.withdrawableBalance?.toFixed(2) || '0.00'}</div>
-                  <div className="card-icon">💳</div>
+                <div style={{ fontSize: '12px', color: 'var(--color-muted)', marginBottom: '12px', textAlign: 'center' }}>
+                  {match.time}
                 </div>
 
-                <div className="wallet-card total">
-                  <div className="card-label">Total Balance</div>
-                  <div className="card-amount">
-                    ${(
-                      (wallet.mainBalance || 0) + 
-                      (wallet.bonusBalance || 0)
-                    ).toFixed(2)}
-                  </div>
-                  <div className="card-icon">📊</div>
+                <div className="match-odds">
+                  <button 
+                    className="odd-btn"
+                    onClick={() => handleSelectOdd(match.id, match, '1', match.odds['1'])}
+                  >
+                    <span className="odd-label">1</span>
+                    {match.odds['1']}
+                  </button>
+                  <button 
+                    className="odd-btn"
+                    onClick={() => handleSelectOdd(match.id, match, 'X', match.odds['X'])}
+                  >
+                    <span className="odd-label">Draw</span>
+                    {match.odds['X']}
+                  </button>
+                  <button 
+                    className="odd-btn"
+                    onClick={() => handleSelectOdd(match.id, match, '2', match.odds['2'])}
+                  >
+                    <span className="odd-label">2</span>
+                    {match.odds['2']}
+                  </button>
                 </div>
               </div>
-            </section>
-
-            {/* Quick Actions */}
-            <section className="quick-actions-section">
-              <h2 className="section-title">Quick Actions</h2>
-              <div className="actions-grid">
-                <a href="/deposit" className="action-btn deposit-btn">
-                  <span className="action-icon">📥</span>
-                  <span className="action-text">Deposit Funds</span>
-                </a>
-                <a href="/withdraw" className="action-btn withdraw-btn">
-                  <span className="action-icon">📤</span>
-                  <span className="action-text">Withdraw</span>
-                </a>
-                <a href="/sports" className="action-btn sports-btn">
-                  <span className="action-icon">⚽</span>
-                  <span className="action-text">Sports Betting</span>
-                </a>
-                <a href="/casino" className="action-btn casino-btn">
-                  <span className="action-icon">🎰</span>
-                  <span className="action-text">Casino Games</span>
-                </a>
-              </div>
-            </section>
-
-            {/* Promotions Section */}
-            <section className="promotions-section">
-              <h2 className="section-title">Featured Promotions</h2>
-              <div className="promo-grid">
-                <div className="promo-card">
-                  <h3>Welcome Bonus</h3>
-                  <p>Get up to 100% bonus on your first deposit</p>
-                  <div className="promo-tag">Up to $500</div>
-                </div>
-                <div className="promo-card">
-                  <h3>Daily Jackpot</h3>
-                  <p>Win big with our daily jackpot draws</p>
-                  <div className="promo-tag">Multiple Winners</div>
-                </div>
-                <div className="promo-card">
-                  <h3>VIP Program</h3>
-                  <p>Earn rewards and exclusive perks</p>
-                  <div className="promo-tag">Exclusive</div>
-                </div>
-              </div>
-            </section>
+            ))}
           </>
         )}
+      </div>
+
+      {/* BET SLIP */}
+      <div className={`bet-slip ${betSlip.open ? 'open' : ''}`}>
+        <div className="bet-slip-header">
+          <div className="bet-slip-title">Bet Slip ({betSlip.selections.length})</div>
+          <button className="bet-slip-close" onClick={() => setBetSlip(prev => ({ ...prev, open: false }))}>✕</button>
+        </div>
+
+        {betSlip.selections.length > 0 ? (
+          <>
+            {betSlip.selections.map(selection => (
+              <div key={selection.id} className="bet-selection">
+                <div className="bet-selection-info">
+                  <div className="bet-match">{selection.match}</div>
+                  <div className="bet-odds">{selection.type} @ {selection.odd}</div>
+                </div>
+                <button className="remove-btn" onClick={() => removeSelection(selection.id)}>✕</button>
+              </div>
+            ))}
+
+            <div className="bet-summary">
+              <div className="summary-row">
+                <span>Total Odds</span>
+                <span>{calculateTotalOdds()}x</span>
+              </div>
+              <div className="summary-row">
+                <span>Potential Win</span>
+                <span style={{ color: 'var(--color-win)' }}>₦{calculatePotentialWin()}</span>
+              </div>
+            </div>
+
+            <input 
+              className="stake-input"
+              type="number"
+              placeholder="Enter stake amount"
+              value={betSlip.stake}
+              onChange={(e) => setBetSlip(prev => ({ ...prev, stake: e.target.value }))}
+            />
+
+            <button className="btn-place-bet" onClick={handlePlaceBet}>
+              Place Bet - ₦{calculatePotentialWin()}
+            </button>
+          </>
+        ) : (
+          <p style={{ textAlign: 'center', color: 'var(--color-muted)', padding: '20px' }}>
+            Select matches to create a bet
+          </p>
+        )}
+      </div>
+
+      {/* BOTTOM NAVIGATION */}
+      <div className="bottom-nav">
+        <a href="/" className="nav-item active">
+          <div className="nav-icon">🏠</div>
+          Home
+        </a>
+        <a href="/sports" className="nav-item">
+          <div className="nav-icon">⚽</div>
+          Sports
+        </a>
+        <a href="/casino" className="nav-item">
+          <div className="nav-icon">🎰</div>
+          Casino
+        </a>
+        <a href="/money" className="nav-item">
+          <div className="nav-icon">💰</div>
+          Money
+        </a>
+        <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); logout(); navigate('/login'); }}>
+          <div className="nav-icon">👤</div>
+          Account
+        </a>
       </div>
     </div>
   );
