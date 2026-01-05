@@ -86,3 +86,30 @@ exports.registerAdmin = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
+
+const User = require("../models/User");
+
+mongoose.connect(process.env.MONGO_URI);
+
+async function createAdmin() {
+  const email = "admin@betano.com";
+  const password = "Admin@123";
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const admin = new User({
+    email,
+    password: hashedPassword,
+    role: "superadmin",
+    isAdmin: true
+  });
+
+  await admin.save();
+  console.log("✅ Admin created successfully");
+  process.exit();
+}
+
+createAdmin();
