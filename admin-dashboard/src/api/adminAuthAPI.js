@@ -8,7 +8,8 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+// Prefer Vercel-provided env, fallback to live Render backend URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://betano-9i2q.onrender.com';
 
 const adminAPI = axios.create({
   baseURL: `${API_BASE_URL}/api/auth`,
@@ -44,3 +45,5 @@ export const canAccessPage = (requiredRoles) => {
   const role = getAdminRole();
   return requiredRoles.includes(role);
 };
+
+console.log('[adminAuthAPI] Using API_BASE_URL:', API_BASE_URL);

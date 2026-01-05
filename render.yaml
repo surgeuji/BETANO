@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: BETANO-backend
+    env: node
+    plan: free
+    branch: main
+    repo: https://github.com/surgeuji/BETANO.git
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: PORT
+        value: "5000"
+      - key: JWT_SECRET
+        value: "REPLACE_WITH_STRONG_SECRET"
+      - key: API_FOOTBALL_KEY
+        value: "46c62fd8011b06c3f262ef46528d7ac9"
+      - key: SMTP_HOST
+        value: "smtp.gmail.com"
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: "bettingflash62@gmail.com"
+      - key: SMTP_PASS
+        value: "REPLACE_WITH_APP_PASSWORD"
+      - key: ADMIN_EMAIL
+        value: "bettingflash62@gmail.com"
+      - key: ADMIN_PHONE
+        value: "07071198393"
