@@ -48,7 +48,17 @@ class CasinoService {
     game.result = result;
     game.payout = payout;
     game.status = 'COMPLETED';
+    game.settledBy = adminId;
+    game.settledAt = new Date();
     return game;
+  }
+
+  getPendingGames() {
+    return this.games.filter(g => g.status === 'ACTIVE');
+  }
+
+  getCompletedGames() {
+    return this.games.filter(g => g.status === 'COMPLETED');
   }
 }
 

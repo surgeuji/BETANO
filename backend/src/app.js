@@ -22,6 +22,7 @@ const depositRoutes = require('./routes/deposit.routes');
 const withdrawalRoutes = require('./routes/withdrawal.routes');
 const betRoutes = require('./routes/bet.routes');
 const casinoRoutes = require('./routes/casino.routes');
+const virtualRoutes = require('./routes/virtual.routes');
 const adminRoutes = require('./routes/admin.routes');
 const debugRoutes = require('./routes/debug.routes');
 
@@ -38,6 +39,7 @@ app.use('/api/deposits', depositRoutes);
 app.use('/api/withdrawals', withdrawalRoutes);
 app.use('/api/bets', betRoutes);
 app.use('/api/casino', casinoRoutes);
+app.use('/api/virtual', virtualRoutes);
 app.use('/api/admin', adminRoutes);
 // Debug routes (non-production, for troubleshooting)
 app.use('/debug', debugRoutes);

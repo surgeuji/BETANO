@@ -34,6 +34,23 @@ export const getGame = async (gameId) => {
 };
 
 export const getUserGames = async () => {
-  const response = await casinoAPI.get('/');
+  const response = await casinoAPI.get('/user/games');
   return response.data;
 };
+
+export const getAllGames = async () => {
+  const response = await casinoAPI.get('/admin/all');
+  return response.data;
+};
+
+export const getPendingGames = async () => {
+  const response = await casinoAPI.get('/admin/pending');
+  return response.data;
+};
+
+export const settleGame = async (gameId, result, payout) => {
+  const response = await casinoAPI.post(`/${gameId}/settle`, { result, payout });
+  return response.data;
+};
+
+export default casinoAPI;
