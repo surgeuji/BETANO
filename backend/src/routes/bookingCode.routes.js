@@ -14,6 +14,7 @@ const router = express.Router();
 router.get('/available', auth, bookingCodeController.getAvailableCodes);
 router.get('/:codeId', auth, bookingCodeController.getCodeDetails);
 router.post('/use', auth, bookingCodeController.useCode);
+router.get('/lookup/:code', bookingCodeController.lookupBetByCode);
 
 // Admin routes - full management
 router.post('/', auth, adminAuth(), bookingCodeController.createCode);

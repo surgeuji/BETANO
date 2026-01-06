@@ -53,7 +53,28 @@ const BookingCodes = () => {
       setError('Please enter a code');
       return;
     }
-    await handleUseCode(codeInput.toUpperCase());
+    // Try redeem first; if fails, try view shared bet
+    try {
+      await handleUseCode(codeInput.toUpperCase());
+    } catch (e) {
+      try {
+        const { getBetByCode } = await import('../api/codesAPI');
+        const bet = await getBetByCode(codeInput.toUpperCase());
+        alert(`Booking code ${bet.bookingCode} selections:\n` + bet.selections.map(s => `${s.match} @ ${s.odd}`).join('\n'));
+      } catch (err) {
+        setError(`❌ ${err.response?.data?.error || 'Failed to use or load code'}`);
+      }
+    }
+  };
+
+  const viewSharedCode = async (code) => {
+    try {
+      const { getBetByCode } = await import('../api/codesAPI');
+      const bet = await getBetByCode(code);
+      alert(`Booking code ${bet.bookingCode} selections:\n` + bet.selections.map(s => `${s.match} @ ${s.odd}`).join('\n'));
+    } catch (err) {
+      setError(`❌ ${err.response?.data?.error || 'Failed to load code'}`);
+    }
   };
 
   const getCodeIcon = (type) => {
@@ -215,6 +236,23 @@ const BookingCodes = () => {
                     }}
                   >
                     CLAIM
+                  </button>
+                  <button
+                    onClick={() => viewSharedCode(code.code)}
+                    style={{
+                      padding: '8px 16px',
+                      marginLeft: '8px',
+                      backgroundColor: '#2a2f3e',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    VIEW
                   </button>
                 </div>
               </div>

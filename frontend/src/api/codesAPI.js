@@ -36,6 +36,12 @@ export const useBookingCode = async (code) => {
   return response.data;
 };
 
+// Public: get bet by booking code (no auth required)
+export const getBetByCode = async (code) => {
+  const response = await axios.get(`${API_BASE_URL}/api/codes/lookup/${code}`);
+  return response.data;
+};
+
 // Admin endpoints
 export const createBookingCode = async (codeData) => {
   const response = await codesAPI.post('/', codeData);

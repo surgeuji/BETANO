@@ -5,6 +5,7 @@
 
 const BookingCodeService = require('../services/BookingCodeService');
 const WalletService = require('../services/WalletService');
+const BetService = require('../services/BetService');
 
 exports.getAvailableCodes = (req, res) => {
   try {
@@ -135,6 +136,30 @@ exports.deleteCode = (req, res) => {
     }
 
     res.json({ message: 'Code deleted successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Public lookup to reveal a bet's selections by booking code
+exports.lookupBetByCode = (req, res) => {
+  try {
+    const code = req.params.code;
+    if (!code) return res.status(400).json({ error: 'Code required' });
+
+    const bet = BetService.getBetByBookingCode(code);
+    if (!bet) return res.status(404).json({ error: 'Booking code not found or bet not available' });
+
+    // Return only non-sensitive details
+    return res.json({
+      id: bet.id,
+      selections: bet.selections,
+      stake: bet.stake,
+      odds: bet.odds,
+      potentialPayout: bet.potentialPayout,
+      createdAt: bet.createdAt,
+      bookingCode: bet.bookingCode
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

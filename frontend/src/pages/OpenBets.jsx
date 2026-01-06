@@ -10,7 +10,7 @@ const OpenBets = () => {
     (async () => {
       try {
         const data = await getUserBets();
-        const running = data.filter(b => b.state === 'RUNNING');
+        const running = data.filter(b => b.status === 'PENDING');
         setBets(running);
       } catch (e) {
         console.error('Failed to load open bets', e);
@@ -41,7 +41,7 @@ const OpenBets = () => {
             <div key={b.id} className="match-card">
               <div className="match-header">
                 <span>Bet #{b.id}</span>
-                <span className="match-badge">RUNNING</span>
+                <span className="match-badge">{(b.status || 'PENDING').toUpperCase()}</span>
               </div>
               <div style={{ paddingTop: 8, color: 'var(--color-muted)', fontSize: 13 }}>{new Date(b.createdAt).toLocaleString()}</div>
               <div style={{ marginTop: 8 }}>

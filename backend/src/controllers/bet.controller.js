@@ -19,7 +19,7 @@ exports.placeBet = (req, res) => {
     }
 
     const bet = BetService.placeBet(req.user.id, selections, stake, odds);
-    res.status(201).json(bet);
+    res.status(201).json({ bet, bookingCode: bet.bookingCode });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

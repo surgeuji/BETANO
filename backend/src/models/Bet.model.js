@@ -18,11 +18,12 @@ class Bet {
     this.stake = stake;
     this.odds = odds;
     this.potentialPayout = stake * odds;
-    this.status = 'ACTIVE'; // ACTIVE, WON, LOST, PENDING_SETTLEMENT
+    this.status = 'PENDING'; // PENDING (open), WON, LOST, SETTLED
     this.createdAt = new Date();
     this.settledAt = null;
     this.settledBy = null;
     this.winnings = 0;
+    this.bookingCode = null; // assigned when bet is created
   }
 }
 

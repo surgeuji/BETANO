@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllVirtualGames } from '../api/virtualAPI';
+import { placeBet } from '../api/betAPI';
 import { getWallet } from '../api/walletAPI';
 import '../styles/sportybet.css';
 import TeamLogo from '../components/TeamLogo';
@@ -213,7 +214,30 @@ const Virtual = () => {
             </div>
           </div>
 
-          <button style={{
+          <button onClick={() => {
+            (async () => {
+              try {
+                const selections = betSlip.selections.map(s => ({ match: s.match, odd: s.odd, type: s.type }));
+                const stake = parseFloat(betSlip.stake);
+                const odds = parseFloat(calculateTotalOdds());
+                if (selections.length === 0 || !stake || stake <= 0) {
+                  alert('Please select at least one selection and enter a valid stake');
+                  return;
+                }
+                const res = await placeBet(selections, stake, odds);
+                const booking = res.bookingCode || res.bet?.bookingCode;
+                if (booking) {
+                  alert(`Bet placed! Booking code: ${booking} — share to view selections.`);
+                } else {
+                  alert('Bet placed! Check Open Bets.');
+                }
+                setBetSlip({ selections: [], stake: '', open: false });
+              } catch (err) {
+                console.error('Failed to place bet', err);
+                alert('Failed to place bet: ' + (err.response?.data?.error || err.message));
+              }
+            })();
+          }} style={{
             width: '100%',
             padding: '12px',
             backgroundColor: '#00FF7F',

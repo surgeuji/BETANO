@@ -33,6 +33,9 @@ class BetService {
     }
 
     const bet = new Bet(userId, selections, stake, odds);
+    // generate booking code (3 letters + 3 digits)
+    const code = BetService._generateBookingCode();
+    bet.bookingCode = code;
     this.bets.push(bet);
     return bet;
   }
@@ -46,7 +49,18 @@ class BetService {
   }
 
   getActiveBets() {
-    return this.bets.filter(b => b.status === 'ACTIVE');
+    return this.bets.filter(b => b.status === 'PENDING');
+  }
+
+  getBetByBookingCode(code) {
+    return this.bets.find(b => b.bookingCode === code);
+  }
+
+  static _generateBookingCode() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    const rand = (set, n) => Array.from({length: n}, () => set[Math.floor(Math.random()*set.length)]).join('');
+    return rand(letters,3) + rand(nums,3);
   }
 
   getAllBets() {
