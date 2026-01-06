@@ -86,30 +86,29 @@ exports.registerAdmin = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-require("dotenv").config();
 
-const User = require("../models/User");
+exports.adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-mongoose.connect(process.env.MONGO_URI);
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
-async function createAdmin() {
-  const email = "admin@betano.com";
-  const password = "Admin@123";
+    const { user, token } = await UserService.loginUser(email, password);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    // Check if user has admin role
+    const adminRoles = ['SUPER_ADMIN', 'FINANCE_ADMIN', 'OPERATIONS_ADMIN', 'SUPPORT_ADMIN'];
+    if (!adminRoles.includes(user.role)) {
+      return res.status(403).json({ error: 'Admin access required. This account does not have admin privileges.' });
+    }
 
-  const admin = new User({
-    email,
-    password: hashedPassword,
-    role: "superadmin",
-    isAdmin: true
-  });
-
-  await admin.save();
-  console.log("✅ Admin created successfully");
-  process.exit();
-}
-
-createAdmin();
+    res.json({ 
+      message: 'Admin login successful',
+      token,
+      user: { id: user.id, email: user.email, role: user.role }
+    });
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+};

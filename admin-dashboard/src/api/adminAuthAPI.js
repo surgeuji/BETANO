@@ -16,7 +16,7 @@ const adminAPI = axios.create({
 });
 
 export const adminLogin = async (email, password) => {
-  const response = await adminAPI.post('/login', { email, password });
+  const response = await adminAPI.post('/admin-login', { email, password });
   if (response.data.token) {
     localStorage.setItem('adminToken', response.data.token);
     localStorage.setItem('adminRole', response.data.user.role);
