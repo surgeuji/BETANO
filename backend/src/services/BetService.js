@@ -11,6 +11,7 @@
  */
 
 const Bet = require('../models/Bet.model');
+const WalletService = require('./WalletService');
 
 class BetService {
   constructor() {
@@ -22,6 +23,9 @@ class BetService {
     if (selections.length > 60) {
       throw new Error('Maximum 60 selections allowed');
     }
+
+    // Deduct stake from wallet first
+    const wallet = WalletService.deductStake(userId, stake);
 
     // Calculate potential payout
     const potentialPayout = stake * odds;

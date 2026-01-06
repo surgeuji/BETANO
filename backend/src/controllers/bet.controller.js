@@ -9,6 +9,7 @@
  */
 
 const BetService = require('../services/BetService');
+const WalletService = require('../services/WalletService');
 
 exports.placeBet = (req, res) => {
   try {
@@ -19,7 +20,8 @@ exports.placeBet = (req, res) => {
     }
 
     const bet = BetService.placeBet(req.user.id, selections, stake, odds);
-    res.status(201).json({ bet, bookingCode: bet.bookingCode });
+    const wallet = WalletService.getWallet(req.user.id);
+    res.status(201).json({ bet, bookingCode: bet.bookingCode, wallet });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

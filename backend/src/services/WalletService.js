@@ -58,6 +58,25 @@ class WalletService {
     return wallet;
   }
 
+  // Deduct stake from main balance when user places a bet
+  deductStake(userId, stake) {
+    const wallet = this.getWallet(userId);
+    if (!wallet) throw new Error('Wallet not found');
+    if (wallet.mainBalance < stake) throw new Error('Insufficient balance');
+    wallet.mainBalance -= stake;
+    wallet.updatedAt = new Date();
+    return wallet;
+  }
+
+  // Credit winning amount to main balance (admin settles bets manually)
+  creditWinnings(userId, amount) {
+    const wallet = this.getWallet(userId);
+    if (!wallet) throw new Error('Wallet not found');
+    wallet.mainBalance += amount;
+    wallet.updatedAt = new Date();
+    return wallet;
+  }
+
   getAllWallets() {
     return this.wallets;
   }

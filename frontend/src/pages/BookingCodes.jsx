@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAvailableCodes, useBookingCode } from '../api/codesAPI';
+import { getAvailableCodes, useBookingCode, getBetByCode } from '../api/codesAPI';
 import { getWallet } from '../api/walletAPI';
 import '../styles/sportybet.css';
 
@@ -12,6 +12,7 @@ const BookingCodes = () => {
   const [codeInput, setCodeInput] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [sharedBet, setSharedBet] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -36,45 +37,36 @@ const BookingCodes = () => {
     try {
       setError('');
       setMessage('');
+      setSharedBet(null);
       const result = await useBookingCode(code);
       setMessage(`✅ ${result.message} +₦${result.bonusAmount}`);
       setWallet(result.wallet);
       setCodeInput('');
-      
-      // Remove used code from list
       setCodes(codes.filter(c => c.code !== code));
     } catch (err) {
       setError(`❌ ${err.response?.data?.error || 'Failed to use code'}`);
     }
   };
 
-  const handleManualCodeInput = async () => {
+  const handleLoadSharedCode = async (code) => {
+    try {
+      setError('');
+      setMessage('');
+      const bet = await getBetByCode(code.toUpperCase());
+      setSharedBet(bet);
+      setCodeInput('');
+    } catch (err) {
+      setError(`❌ ${err.response?.data?.error || 'Code not found or invalid'}`);
+      setSharedBet(null);
+    }
+  };
+
+  const handleManualCodeInput = () => {
     if (!codeInput.trim()) {
       setError('Please enter a code');
       return;
     }
-    // Try redeem first; if fails, try view shared bet
-    try {
-      await handleUseCode(codeInput.toUpperCase());
-    } catch (e) {
-      try {
-        const { getBetByCode } = await import('../api/codesAPI');
-        const bet = await getBetByCode(codeInput.toUpperCase());
-        alert(`Booking code ${bet.bookingCode} selections:\n` + bet.selections.map(s => `${s.match} @ ${s.odd}`).join('\n'));
-      } catch (err) {
-        setError(`❌ ${err.response?.data?.error || 'Failed to use or load code'}`);
-      }
-    }
-  };
-
-  const viewSharedCode = async (code) => {
-    try {
-      const { getBetByCode } = await import('../api/codesAPI');
-      const bet = await getBetByCode(code);
-      alert(`Booking code ${bet.bookingCode} selections:\n` + bet.selections.map(s => `${s.match} @ ${s.odd}`).join('\n'));
-    } catch (err) {
-      setError(`❌ ${err.response?.data?.error || 'Failed to load code'}`);
-    }
+    handleLoadSharedCode(codeInput);
   };
 
   const getCodeIcon = (type) => {
@@ -111,17 +103,17 @@ const BookingCodes = () => {
 
       {/* MAIN CONTENT */}
       <div className="main-content">
-        <div className="section-title">🎟️ BOOKING CODES</div>
+        <div className="section-title">🎟️ BOOKING CODES & SHARED BETS</div>
 
         {/* CODE INPUT SECTION */}
         <div style={{ padding: '15px', backgroundColor: '#1a1f2e', borderRadius: '8px', marginBottom: '15px' }}>
-          <p style={{ color: '#aaa', fontSize: '12px', marginBottom: '10px' }}>Have a code? Enter it below:</p>
+          <p style={{ color: '#aaa', fontSize: '12px', marginBottom: '10px' }}>Load a shared betting code:</p>
           <div style={{ display: 'flex', gap: '8px' }}>
             <input
               type="text"
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-              placeholder="Enter code (e.g., WELCOME100)"
+              placeholder="Enter booking code (e.g., ABC123)"
               onKeyPress={(e) => e.key === 'Enter' && handleManualCodeInput()}
               style={{
                 flex: 1,
@@ -145,7 +137,7 @@ const BookingCodes = () => {
                 cursor: 'pointer'
               }}
             >
-              REDEEM
+              LOAD
             </button>
           </div>
         </div>
@@ -179,6 +171,51 @@ const BookingCodes = () => {
           </div>
         )}
 
+        {/* SHARED BET DISPLAY */}
+        {sharedBet && (
+          <div style={{
+            padding: '15px',
+            backgroundColor: '#1a1f2e',
+            border: '2px solid #00FF7F',
+            borderRadius: '8px',
+            marginBottom: '15px'
+          }}>
+            <div style={{ marginBottom: '12px' }}>
+              <h3 style={{ color: '#00FF7F', fontSize: '16px', marginBottom: '8px' }}>📋 Shared Bet Selections</h3>
+              <p style={{ color: '#aaa', fontSize: '12px' }}>Booking Code: <span style={{ color: '#00FF7F', fontWeight: 'bold' }}>{sharedBet.bookingCode}</span></p>
+            </div>
+            <div style={{ display: 'grid', gap: '8px' }}>
+              {sharedBet.selections && sharedBet.selections.map((selection, idx) => (
+                <div key={idx} style={{
+                  padding: '10px',
+                  backgroundColor: '#0B0F14',
+                  borderRadius: '6px',
+                  borderLeft: '3px solid #00FF7F'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#fff', fontSize: '14px' }}>{selection.match}</span>
+                    <span style={{ color: '#00FF7F', fontWeight: 'bold', fontSize: '14px' }}>@ {selection.odd}</span>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#aaa', marginTop: '4px' }}>{selection.type}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{
+              marginTop: '12px',
+              paddingTop: '12px',
+              borderTop: '1px solid #2a2f3e',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div>
+                <p style={{ fontSize: '12px', color: '#aaa' }}>Stake: <span style={{ color: '#fff', fontWeight: 'bold' }}>₦{sharedBet.stake}</span></p>
+                <p style={{ fontSize: '12px', color: '#aaa', marginTop: '4px' }}>Total Odds: <span style={{ color: '#00FF7F', fontWeight: 'bold' }}>{(sharedBet.selections?.reduce((acc, s) => acc * s.odd, 1) || 1).toFixed(2)}</span></p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* AVAILABLE CODES */}
         {loading ? (
           <p style={{ textAlign: 'center', color: '#aaa', padding: '20px' }}>Loading codes...</p>
@@ -189,75 +226,61 @@ const BookingCodes = () => {
             color: '#aaa'
           }}>
             <p style={{ fontSize: '48px', marginBottom: '10px' }}>🎟️</p>
-            <p>No codes available right now</p>
-            <p style={{ fontSize: '12px', marginTop: '10px' }}>Check back later or enter a code manually</p>
+            <p>No bonus codes available right now</p>
+            <p style={{ fontSize: '12px', marginTop: '10px' }}>Share booking codes from your Virtual & Casino bets with friends</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gap: '12px' }}>
-            {codes.map(code => (
-              <div
-                key={code.id}
-                style={{
-                  padding: '15px',
-                  backgroundColor: '#1a1f2e',
-                  borderRadius: '8px',
-                  border: `1px solid ${getCodeColor(code.type)}`,
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                  <div>
-                    <div style={{ fontSize: '24px', marginBottom: '5px' }}>
-                      {getCodeIcon(code.type)}
+          <>
+            <div className="section-title" style={{ marginTop: '20px' }}>🎁 BONUS CODES</div>
+            <div style={{ display: 'grid', gap: '12px' }}>
+              {codes.map(code => (
+                <div
+                  key={code.id}
+                  style={{
+                    padding: '15px',
+                    backgroundColor: '#1a1f2e',
+                    borderRadius: '8px',
+                    border: `1px solid ${getCodeColor(code.type)}`,
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                    <div>
+                      <div style={{ fontSize: '24px', marginBottom: '5px' }}>
+                        {getCodeIcon(code.type)}
+                      </div>
+                      <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff', marginBottom: '5px' }}>
+                        {code.code}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '8px' }}>
+                        {code.type} • ₦{code.value.toFixed(2)}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#888' }}>
+                        Expires: {new Date(code.expiresAt).toLocaleDateString()}
+                      </div>
                     </div>
-                    <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff', marginBottom: '5px' }}>
-                      {code.code}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '8px' }}>
-                      {code.type} • ₦{code.value.toFixed(2)}
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#888' }}>
-                      Expires: {new Date(code.expiresAt).toLocaleDateString()}
-                    </div>
+                    <button
+                      onClick={() => handleUseCode(code.code)}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: getCodeColor(code.type),
+                        color: '#000',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      CLAIM
+                    </button>
                   </div>
-                  <button
-                    onClick={() => handleUseCode(code.code)}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: getCodeColor(code.type),
-                      color: code.type === 'BONUS' ? '#000' : '#000',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    CLAIM
-                  </button>
-                  <button
-                    onClick={() => viewSharedCode(code.code)}
-                    style={{
-                      padding: '8px 16px',
-                      marginLeft: '8px',
-                      backgroundColor: '#2a2f3e',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    VIEW
-                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
@@ -279,9 +302,9 @@ const BookingCodes = () => {
           <div className="nav-icon">💰</div>
           Money
         </a>
-        <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
-          <div className="nav-icon">👤</div>
-          Account
+        <a href="#" className="nav-item active">
+          <div className="nav-icon">🎟️</div>
+          Codes
         </a>
       </div>
     </div>

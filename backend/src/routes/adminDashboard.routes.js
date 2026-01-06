@@ -86,9 +86,9 @@ router.post('/bets/:betId/settle', (req, res) => {
     const bet = BetService.settleBet(req.params.betId, result, payout);
     const user = UserService.getUserById(bet.userId);
 
-    // Update wallet if won
+    // Credit winnings to wallet if won
     if (result === 'WIN') {
-      WalletService.addBalance(bet.userId, payout);
+      WalletService.creditWinnings(bet.userId, payout);
     }
 
     res.json({ 
