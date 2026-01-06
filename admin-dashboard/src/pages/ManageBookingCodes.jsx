@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllBookingCodes, createBookingCode, deactivateCode, deleteBookingCode } from '../../api/codesAPI';
+import { getAllBookingCodes, createBookingCode, deactivateCode, deleteBookingCode } from '../api/codesAPI';
 import '../styles/admin.css';
 
 const ManageBookingCodes = () => {
