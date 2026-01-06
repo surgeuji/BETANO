@@ -29,26 +29,24 @@ services:
 
   - type: web
     name: BETANO-frontend
-    env: static
+    env: node
     plan: free
     branch: main
     repo: https://github.com/surgeuji/BETANO.git
     buildCommand: cd frontend && npm install && npm run build
-    staticSite: true
-    publishPath: frontend/dist
+    startCommand: cd frontend && npx serve -s dist -l 3000
     envVars:
       - key: VITE_API_BASE_URL
         value: "https://betano-backend.onrender.com"
 
   - type: web
     name: BETANO-admin
-    env: static
+    env: node
     plan: free
     branch: main
     repo: https://github.com/surgeuji/BETANO.git
     buildCommand: cd admin-dashboard && npm install && npm run build
-    staticSite: true
-    publishPath: admin-dashboard/dist
+    startCommand: cd admin-dashboard && npx serve -s dist -l 3000
     envVars:
       - key: VITE_API_BASE_URL
         value: "https://betano-backend.onrender.com"
