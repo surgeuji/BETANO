@@ -14,6 +14,7 @@ import ManageCasino from './pages/ManageCasino';
 import ManageWallets from './pages/ManageWallets';
 import ManageVirtualGames from './pages/ManageVirtualGames';
 import ManageCasinoGames from './pages/ManageCasinoGames';
+import ManageBookingCodes from './pages/ManageBookingCodes';
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
                     <Route path="/wallets" element={<ManageWallets />} />
                     <Route path="/deposits" element={<ManageDeposits />} />
                     <Route path="/withdrawals" element={<ManageWithdrawals />} />
-                    <Route path="/booking-codes" element={<div style={{padding: '20px'}}><h2>🎫 Booking Codes</h2><p>Coming soon...</p></div>} />
+                    <Route path="/booking-codes" element={<ManageBookingCodes />} />
                     <Route path="/transactions" element={<div style={{padding: '20px'}}><h2>📋 Transaction Logs</h2><p>Coming soon...</p></div>} />
                   </Routes>
                 </div>

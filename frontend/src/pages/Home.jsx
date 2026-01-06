@@ -12,8 +12,49 @@ const Home = () => {
   const [error, setError] = useState('');
   const [betSlip, setBetSlip] = useState({ selections: [], stake: '', open: false });
   const navigate = useNavigate();
+  const [selectedLeague, setSelectedLeague] = useState('All');
 
   const [liveMatches, setLiveMatches] = useState([]);
+
+  // Generate 1000+ mock games
+  const generateMockGames = () => {
+    const leagues = ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Championship', 'Serie B', 'Eredivisie', 'Belgian Pro', 'Portuguese Liga'];
+    const teams = [
+      ['Manchester United', 'Liverpool'], ['Chelsea', 'Arsenal'], ['Man City', 'Tottenham'],
+      ['Barcelona', 'Real Madrid'], ['Atletico Madrid', 'Sevilla'], ['Valencia', 'Bilbao'],
+      ['AC Milan', 'Inter'], ['Roma', 'Napoli'], ['Juventus', 'Lazio'],
+      ['Bayern Munich', 'Dortmund'], ['RB Leipzig', 'Frankfurt'], ['Leverkusen', 'Hoffenheim'],
+      ['PSG', 'Marseille'], ['Lyon', 'Monaco'], ['Lille', 'Nice'],
+      ['Ajax', 'PSV'], ['Feyenoord', 'Vitesse'], ['AZ Alkmaar', 'Utrecht'],
+      ['Club Brugge', 'Genk'], ['Standard Liege', 'Anderlecht'], ['Sporting CP', 'Porto']
+    ];
+    
+    const games = [];
+    let id = 1;
+    
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 100; j++) {
+        const league = leagues[i];
+        const teamPair = teams[Math.floor(Math.random() * teams.length)];
+        const time = new Date(Date.now() + Math.random() * 86400000 * 7).toLocaleString();
+        
+        games.push({
+          id: id++,
+          league,
+          home: teamPair[0],
+          away: teamPair[1],
+          time,
+          odds: {
+            '1': (1.5 + Math.random() * 1.5).toFixed(2),
+            'X': (2.5 + Math.random() * 1.5).toFixed(2),
+            '2': (1.5 + Math.random() * 1.5).toFixed(2)
+          }
+        });
+      }
+    }
+    
+    return games;
+  };
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -28,15 +69,10 @@ const Home = () => {
     };
 
     fetchWallet();
-    // fetch live matches (use env-configured provider if available)
-    (async () => {
-      try {
-        const matches = await fetchLiveMatches();
-        setLiveMatches(matches);
-      } catch (e) {
-        console.error('Failed to fetch live matches', e);
-      }
-    })();
+    
+    // Load 1000 mock games
+    const mockGames = generateMockGames();
+    setLiveMatches(mockGames);
   }, []);
 
   const handleSelectOdd = (matchId, matchInfo, oddType, oddValue) => {
@@ -107,8 +143,52 @@ const Home = () => {
 
         {!loading && (
           <>
-            <div className="section-title">🔴 AVAILABLE</div>
-            {liveMatches.map(match => (
+            {/* LEAGUE FILTER */}
+            <div style={{ padding: '10px 15px', backgroundColor: '#1a1f2e', borderBottom: '1px solid #2a2f3e', overflowX: 'auto' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={() => setSelectedLeague('All')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    backgroundColor: selectedLeague === 'All' ? '#00FF7F' : '#2a2f3e',
+                    color: selectedLeague === 'All' ? '#000' : '#aaa',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: selectedLeague === 'All' ? 'bold' : 'normal',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  All ({liveMatches.length})
+                </button>
+                {['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Championship'].map(league => {
+                  const count = liveMatches.filter(m => m.league === league).length;
+                  return (
+                    <button
+                      key={league}
+                      onClick={() => setSelectedLeague(league)}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        backgroundColor: selectedLeague === league ? '#00FF7F' : '#2a2f3e',
+                        color: selectedLeague === league ? '#000' : '#aaa',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        fontWeight: selectedLeague === league ? 'bold' : 'normal',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {league} ({count})
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="section-title">🔴 AVAILABLE ({(selectedLeague === 'All' ? liveMatches : liveMatches.filter(m => m.league === selectedLeague)).length} games)</div>
+            {(selectedLeague === 'All' ? liveMatches : liveMatches.filter(m => m.league === selectedLeague)).map(match => (
               <div key={match.id} className="match-card">
                 <div className="match-header">
                   <span>{match.league}</span>
@@ -215,9 +295,9 @@ const Home = () => {
           <div className="nav-icon">🏠</div>
           Home
         </a>
-        <a href="/sports" className="nav-item">
+        <a href="/virtual" className="nav-item">
           <div className="nav-icon">⚽</div>
-          Sports
+          Virtual
         </a>
         <a href="/casino" className="nav-item">
           <div className="nav-icon">🎰</div>

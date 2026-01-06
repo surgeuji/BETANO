@@ -312,9 +312,9 @@ const Home = () => {
           <div className="nav-icon">🏠</div>
           Home
         </a>
-        <a href="/sports" className="nav-item">
+        <a href="/virtual" className="nav-item">
           <div className="nav-icon">⚽</div>
-          Sports
+          Virtual
         </a>
         <a href="/casino" className="nav-item">
           <div className="nav-icon">🎰</div>
