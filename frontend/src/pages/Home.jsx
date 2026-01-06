@@ -107,12 +107,12 @@ const Home = () => {
 
         {!loading && (
           <>
-            <div className="section-title">🔴 Live Now</div>
+            <div className="section-title">🔴 AVAILABLE</div>
             {liveMatches.map(match => (
               <div key={match.id} className="match-card">
                 <div className="match-header">
                   <span>{match.league}</span>
-                  <span className="match-badge">LIVE</span>
+                  <span className="match-badge">AVAILABLE</span>
                 </div>
 
                 <div className="match-info">
