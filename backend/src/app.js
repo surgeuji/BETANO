@@ -24,6 +24,7 @@ const betRoutes = require('./routes/bet.routes');
 const casinoRoutes = require('./routes/casino.routes');
 const virtualRoutes = require('./routes/virtual.routes');
 const adminRoutes = require('./routes/admin.routes');
+const adminDashboardRoutes = require('./routes/adminDashboard.routes');
 const debugRoutes = require('./routes/debug.routes');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/api/bets', betRoutes);
 app.use('/api/casino', casinoRoutes);
 app.use('/api/virtual', virtualRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminDashboardRoutes);
 // Debug routes (non-production, for troubleshooting)
 app.use('/debug', debugRoutes);
 
