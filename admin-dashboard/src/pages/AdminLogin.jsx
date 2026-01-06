@@ -4,8 +4,8 @@ import { adminLogin } from '../api/adminAuthAPI';
 import '../styles/admin.css';
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('admin@betano.com');
-  const [password, setPassword] = useState('Admin@123');
+  const [email, setEmail] = useState('daviskipper@gmail.com');
+  const [password, setPassword] = useState('FABONG123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -72,9 +72,9 @@ const AdminLogin = () => {
         </form>
 
         <div style={{ marginTop: 30, padding: 20, background: 'rgba(255, 215, 0, 0.1)', borderRadius: 10, border: '1px solid rgba(255, 215, 0, 0.3)' }}>
-          <p style={{ color: '#ffd700', margin: '0 0 10px', fontWeight: 700 }}>Demo Credentials:</p>
-          <p style={{ color: '#b0b0b0', margin: 5, fontSize: 13 }}>Email: admin@betano.com</p>
-          <p style={{ color: '#b0b0b0', margin: 5, fontSize: 13 }}>Password: Admin@123</p>
+          <p style={{ color: '#ffd700', margin: '0 0 10px', fontWeight: 700 }}>Super Admin Credentials:</p>
+          <p style={{ color: '#b0b0b0', margin: 5, fontSize: 13 }}>Email: daviskipper@gmail.com</p>
+          <p style={{ color: '#b0b0b0', margin: 5, fontSize: 13 }}>Password: FABONG123</p>
         </div>
       </div>
     </div>
